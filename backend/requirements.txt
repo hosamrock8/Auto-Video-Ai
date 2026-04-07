@@ -1,0 +1,10 @@
+openai
+google-generativeai
+trafilatura
+python-dotenv
+pydantic
+requests
+httpx
+fastapi
+uvicorn
+tenacity

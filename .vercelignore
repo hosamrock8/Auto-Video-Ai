@@ -1,0 +1,7 @@
+projects/
+projects_vault/
+.env
+.env.local
+global_settings.json
+__pycache__/
+node_modules/

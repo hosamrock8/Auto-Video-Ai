@@ -1,0 +1,48 @@
+# Environments
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+global_settings.json
+
+# Dependencies
+node_modules/
+jspm_packages/
+typings/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+ENV/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+build/
+
+# Factory Artifacts (Local Data)
+projects_vault/
+projects/
+output_script.json
+*.mp4
+*.jpg
+*.png
+*.wav
+*.mp3
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Temporary
+tmp/
+temp/
