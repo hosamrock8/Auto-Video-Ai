@@ -3,8 +3,17 @@ import json
 from datetime import datetime
 from typing import List
 
-PROJECTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "projects_vault")
-os.makedirs(PROJECTS_DIR, exist_ok=True)
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+if IS_VERCEL:
+    PROJECTS_DIR = "/tmp/projects_vault"
+else:
+    PROJECTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "projects_vault")
+
+# Ensure directory exists (on Vercel /tmp is writable)
+try:
+    os.makedirs(PROJECTS_DIR, exist_ok=True)
+except Exception as e:
+    print(f"--- [STORAGE WARNING] Could not ensure PROJECTS_DIR: {e} ---")
 
 from .settings_manager import settings_manager
 

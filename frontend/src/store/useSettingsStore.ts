@@ -195,8 +195,22 @@ export const useSettingsStore = create<SettingsState>()(
             api_key: config.api_key
           });
           return res.data;
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'Connection failed';
+        } catch (err: any) {
+          console.error('Test Connection Error:', err);
+          let message = 'Connection failed';
+          
+          if (err.response) {
+            if (err.response.status === 404) {
+              message = 'Error 404: Test Route Not Found. Restart Backend!';
+            } else {
+              message = `Server Error: ${err.response.status}`;
+            }
+          } else if (err.request) {
+            message = 'No response from backend. Check URL/CORS.';
+          } else {
+            message = err.message;
+          }
+          
           return { status: 'error', message };
         } finally {
           set({ testingProvider: null });

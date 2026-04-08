@@ -2,7 +2,14 @@ import os
 import json
 from typing import Dict, Any
 
-SETTINGS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "global_settings.json")
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_SETTINGS_PATH = os.path.join(BASE_DIR, "global_settings.json")
+
+if IS_VERCEL:
+    SETTINGS_PATH = "/tmp/global_settings.json"
+else:
+    SETTINGS_PATH = STATIC_SETTINGS_PATH
 
 DEFAULT_SETTINGS = {
     "llm": {
@@ -85,6 +92,13 @@ class SettingsManager:
         self.settings = self._load()
 
     def _load(self) -> Dict[str, Any]:
+        # On Vercel, try to seed from static version if /tmp version doesn't exist
+        if IS_VERCEL and not os.path.exists(SETTINGS_PATH) and os.path.exists(STATIC_SETTINGS_PATH):
+            try:
+                with open(STATIC_SETTINGS_PATH, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except: pass
+
         if os.path.exists(SETTINGS_PATH):
             try:
                 with open(SETTINGS_PATH, 'r', encoding='utf-8') as f:

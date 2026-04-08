@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 
-from .factory_store import get_vault, list_all_vaults, ProjectState, LuminaVault
+from .factory_store import get_vault, list_all_vaults, ProjectState, LuminaVault, PROJECTS_DIR
 from .scraper import scraper
 from .post_production import post_production
 from .settings_manager import settings_manager
@@ -29,8 +29,7 @@ app.add_middleware(
 )
 
 # Serve generated media files (images, audio, video) from the vault
-VAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "projects_vault")
-os.makedirs(VAULT_DIR, exist_ok=True)
+VAULT_DIR = PROJECTS_DIR
 app.mount("/projects_vault", StaticFiles(directory=VAULT_DIR), name="projects_vault")
 
 class GenerateRequest(BaseModel):
@@ -144,16 +143,9 @@ async def finalize_endpoint(project_id: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(final_pipeline, vault)
     return {"message": "Final assembly and SEO production started"}
 
-@app.get("/api/settings")
-async def get_settings():
-    return settings_manager.settings
-
-@app.post("/api/settings")
-async def update_settings(new_settings: dict):
-    settings_manager.save(new_settings)
-    return {"message": "Settings updated"}
 @app.post("/api/settings/test")
 async def test_settings_connection(payload: dict):
+    print(f"--- [DEBUG] TEST KEY HIT: {payload.get('provider')} ---")
     provider = payload.get("provider")
     api_key = payload.get("api_key")
     
@@ -169,6 +161,15 @@ async def test_settings_connection(payload: dict):
         return await test_connection_service.test_kie(api_key)
     
     return {"status": "error", "message": f"Testing not supported for {provider}"}
+
+@app.get("/api/settings")
+async def get_settings():
+    return settings_manager.settings
+
+@app.post("/api/settings")
+async def update_settings(new_settings: dict):
+    settings_manager.save(new_settings)
+    return {"message": "Settings updated"}
 
 if __name__ == "__main__":
     import uvicorn
