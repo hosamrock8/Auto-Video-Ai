@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import api from '@/lib/api';
 import { 
   Plus, Play, Settings, Film, Clock, CheckCircle, Activity,
   AlertCircle, ArrowRight, BarChart3, Zap, Globe, 
@@ -25,9 +26,9 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<string | null>(null);
 
-  const fetchProjects = React.useCallback(async () => {
+  const fetchProjects = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/projects');
+      const res = await api.get('/api/projects');
       setProjects(res.data);
     } catch (err) {
       console.error("Failed to fetch projects:", err);
@@ -49,12 +50,12 @@ export default function Dashboard() {
     setStatus('Initializing Studio...');
     
     try {
-      const res = await axios.post('http://localhost:8000/api/generate', { url });
+      const res = await api.post('/api/generate', { url });
       setActiveTask(res.data.task_id);
       
       const interval = setInterval(async () => {
         try {
-          const statusRes = await axios.get(`http://localhost:8000/api/tasks/${res.data.task_id}`);
+          const statusRes = await api.get(`/api/tasks/${res.data.task_id}`);
           const newStatus = statusRes.data.status;
           setStatus(newStatus);
           

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use relative URL — Next.js proxy (next.config.ts rewrites) forwards to FastAPI on port 8000
-const API_BASE_URL = '';
+// Use specific backend URL or fallback to localhost for development
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

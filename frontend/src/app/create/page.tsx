@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useStudioStore } from '@/store/useStudioStore';
 import { ArrowLeft, CheckCircle2, ChevronRight, ChevronLeft, Sparkles, LayoutGrid, Mic2, Music, Palette, Type, Zap, Share2, Rocket, Film } from 'lucide-react';
 
+import dynamic from 'next/dynamic';
+
 import Step1Niche from '@/components/V3/Wizard/Step1Niche';
-import Step2Voice from '@/components/V3/Wizard/Step2Voice';
 import Step3Visuals from '@/components/V3/Wizard/Step3Visuals';
-import Step3Music from '@/components/V3/Wizard/Step3Music';
 import Step4ArtStyle from '@/components/V3/Wizard/Step4ArtStyle';
 import Step5Animations from '@/components/V3/Wizard/Step5Animations';
 import Step5Captions from '@/components/V3/Wizard/Step5Captions';
@@ -17,6 +17,9 @@ import Step6Effects from '@/components/V3/Wizard/Step6Effects';
 import Step7Socials from '@/components/V3/Wizard/Step7Socials';
 import Step8Details from '@/components/V3/Wizard/Step8Details';
 import { useTranslationStore } from '@/store/useTranslationStore';
+
+const Step2Voice = dynamic(() => import('@/components/V3/Wizard/Step2Voice'), { ssr: false });
+const Step3Music = dynamic(() => import('@/components/V3/Wizard/Step3Music'), { ssr: false });
 
 const STEPS = [
   { num: 1, label: 'niche', icon: LayoutGrid, color: '#8B5CF6' },
