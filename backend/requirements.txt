@@ -1,10 +1,13 @@
 openai
-google-generativeai
+google-genai
 trafilatura
 python-dotenv
 pydantic
 requests
 httpx
 fastapi
-uvicorn
+uvicorn[standard]
 tenacity
+beautifulsoup4
+youtube-transcript-api
+aiofiles

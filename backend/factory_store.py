@@ -6,6 +6,8 @@ from typing import List
 PROJECTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "projects_vault")
 os.makedirs(PROJECTS_DIR, exist_ok=True)
 
+from .settings_manager import settings_manager
+
 class ProjectState:
     DRAFT = "draft"
     SCRIPTING = "scripting"
@@ -50,11 +52,15 @@ class LuminaVault:
         with open(self.state_file, 'w', encoding='utf-8') as f:
             json.dump(self.data, f, ensure_ascii=False, indent=2)
 
-    def log_cost(self, provider: str, model: str, cost: float):
+    def log_cost(self, provider: str, model: str, cost: float, engine: str = "llm"):
         self.data["costs"]["details"].append({
             "provider": provider, "model": model, "cost": cost, "time": datetime.now().isoformat()
         })
         self.data["costs"]["total"] += cost
+        
+        # Update global telemetry
+        settings_manager.record_usage(engine, cost)
+        
         self.save()
 
     def update_status(self, status: str):

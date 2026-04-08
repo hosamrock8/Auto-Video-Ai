@@ -2,122 +2,106 @@
 
 import React from 'react';
 import { 
-  BarChart3, Settings, ShieldCheck, Zap, 
-  Layers, Film, Image as ImageIcon, LayoutDashboard, 
-  Briefcase, Activity, Database, Globe
+  Settings, FilePlay, LayoutDashboard, Plus, CreditCard, Video
 } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-
-const sidebarGroups = [
-  {
-    title: "The Workshop",
-    items: [
-      { name: "Command Center", icon: LayoutDashboard, path: "/" },
-      { name: "Project Library", icon: Film, path: "/projects" },
-    ]
-  },
-  {
-    title: "Production Engines",
-    items: [
-      { name: "Image Engine", icon: ImageIcon, path: "/image-engine" },
-      { name: "Video Engine", icon: Zap, path: "/video-engine" },
-    ]
-  },
-  {
-    title: "Corporate Offices",
-    items: [
-      { name: "Administrative Office", icon: Briefcase, path: "/admin" },
-      { name: "Services Office", icon: Database, path: "/services" },
-      { name: "Quality Office", icon: ShieldCheck, path: "/quality" },
-    ]
-  },
-  {
-    title: "Operations",
-    items: [
-      { name: "Factory Settings", icon: Settings, path: "/settings" },
-      { name: "Global Logs", icon: Activity, path: "/logs", disabled: true },
-    ]
-  }
-];
+import { useTranslationStore } from '@/store/useTranslationStore';
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { lang, setLang, t } = useTranslationStore();
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
+  const sidebarItems = [
+    { name: t('dashboard'), icon: LayoutDashboard, path: "/" },
+    { name: t('my_videos'), icon: FilePlay, path: "/projects" },
+    { name: t('settings'), icon: Settings, path: "/settings" },
+  ];
+
+  if (pathname === '/create') {
+    return null;
+  }
 
   return (
-    <aside className="w-80 bg-black/40 border-r border-white/[0.03] backdrop-blur-[12px] h-screen sticky top-0 flex flex-col p-8 z-50">
+    <aside className={`w-72 bg-[#0F172A] border-r border-[#1E293B] h-screen sticky top-0 flex flex-col p-6 z-50 ${lang === 'ar' ? 'font-outfit' : 'font-inter'}`}>
       {/* Brand */}
-      <div className="flex items-center gap-4 mb-16 px-2">
-        <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-          <Layers className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between mb-10 px-2">
+        <div className="flex items-center gap-4 cursor-pointer" onClick={() => router.push('/')}>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#8B5CF6] to-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-[#8B5CF6]/30">
+            <Video className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter uppercase text-white leading-none">Faceless</h1>
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mt-1 block">Studio</span>
+          </div>
         </div>
-        <div>
-           <h1 className="text-xl font-black tracking-tighter uppercase text-white leading-none">Lumina</h1>
-           <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mt-1 block">Factory V2</span>
-        </div>
+        
+        {/* Lang Toggle */}
+        <button 
+          onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
+          className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:text-white transition-all shadow-xl"
+        >
+          {lang === 'en' ? 'AR' : 'EN'}
+        </button>
       </div>
 
-      <nav className="flex-1 space-y-12 overflow-y-auto no-scrollbar pr-2">
-        {sidebarGroups.map((group, gIdx) => (
-          <div key={gIdx} className="space-y-4">
-            <h3 className="text-[9px] font-black text-white/28 uppercase tracking-[0.4em] px-4">{group.title}</h3>
-            <div className="space-y-1.5">
-              {group.items.map((item, iIdx) => {
-                const isActive = pathname === item.path;
-                return (
-                  <button
-                    key={iIdx}
-                    onClick={() => !item.disabled && router.push(item.path)}
-                    disabled={item.disabled}
-                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-[1.25rem] text-xs font-black uppercase tracking-widest transition-all group relative ${
-                      isActive 
-                        ? 'bg-white/[0.05] text-white border border-white/5' 
-                        : 'text-white/40 hover:text-white hover:bg-white/[0.02]'
-                    } ${item.disabled ? 'opacity-20 cursor-not-allowed' : ''}`}
-                  >
-                    <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-primary' : 'text-white/30 group-hover:text-white/60'}`} />
-                    {item.name}
-                    
-                    {isActive && (
-                      <motion.div 
-                        layoutId="active-highlight"
-                        className="absolute left-0 w-1 h-4 bg-primary rounded-r-full shadow-[0_0_10px_rgba(168,85,247,0.5)]" 
-                      />
-                    )}
+      {/* New Project CTA */}
+      <button 
+        onClick={() => router.push('/create')}
+        className="w-full flex items-center justify-center gap-3 py-4 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-xl mb-10 font-bold uppercase tracking-widest text-[11px] shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] transition-all active:scale-95"
+      >
+        <Plus className="w-4 h-4" /> {t('new_project')}
+      </button>
 
-                    {item.name === 'Factory Settings' && (
-                       <div className="ml-auto w-5 h-5 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[9px] font-black text-amber-500">
-                          1
-                       </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+      <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar">
+        {sidebarItems.map((item, idx) => {
+          const isActive = pathname === item.path || (item.path === '/' && pathname === '/create');
+          return (
+            <button
+              key={idx}
+              onClick={() => router.push(item.path)}
+              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all group relative ${
+                isActive 
+                  ? 'bg-[#1E293B] text-white border border-[#1E293B]' 
+                  : 'text-gray-400 hover:text-white hover:bg-[#1E293B]/50 border border-transparent'
+              } ${lang === 'ar' ? 'flex-row-reverse text-right' : ''}`}
+            >
+              <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-[#8B5CF6]' : 'text-gray-500 group-hover:text-gray-300'}`} />
+              {item.name}
+              
+              {isActive && (
+                <motion.div 
+                  layoutId="sidebar-active"
+                  className={`absolute w-1 h-6 bg-[#8B5CF6] rounded-full shadow-[0_0_10px_rgba(139,92,246,0.5)] ${lang === 'ar' ? 'right-0 rounded-l-full' : 'left-0 rounded-r-full'}`} 
+                />
+              )}
+            </button>
+          );
+        })}
       </nav>
 
-      {/* Footer Usage */}
-      <div className="pt-8 mt-4 border-t border-white/[0.03]">
-        <div className="bg-white/[0.03] border border-white/5 rounded-3xl p-6 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-black text-white/30 uppercase tracking-widest leading-none">Efficiency</span>
-                <span className="text-[10px] font-black text-primary uppercase tracking-tighter">Cluster_98%</span>
-            </div>
-            <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
-              <div className="bg-primary h-full w-[98%] shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
-            </div>
-            <p className="text-[9px] font-bold text-white/20 mt-4 flex items-center gap-2 uppercase tracking-wide">
-              <Activity className="w-3.5 h-3.5 text-green-500" />
-              Node_Alpha_Online
-            </p>
-          </div>
+      {/* Footer Profile Mock (Cleaned) */}
+      <div className="pt-6 mt-4 border-t border-[#1E293B]">
+        <div className={`flex items-center gap-3 px-2 ${lang === 'ar' ? 'flex-row-reverse text-right' : ''}`}>
+           <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black uppercase text-gray-500">
+             V2
+           </div>
+           <div>
+             <p className="text-[10px] font-black uppercase tracking-widest text-white">{t('internal_tool')}</p>
+             <p className="text-[8px] text-gray-500 uppercase font-bold mt-0.5">Build 2026.04</p>
+           </div>
         </div>
       </div>
+
     </aside>
   );
 }
+

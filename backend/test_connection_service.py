@@ -67,4 +67,20 @@ class TestConnectionService:
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
+    @staticmethod
+    async def test_kie(api_key: str) -> Dict[str, Any]:
+        if not api_key: return {"status": "error", "message": "Key missing"}
+        try:
+            async with httpx.AsyncClient() as client:
+                res = await client.get(
+                    "https://api.kie.ai/v1/models",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    timeout=5.0
+                )
+                if res.status_code == 200:
+                    return {"status": "success", "message": "Successfully connected to Kie.ai"}
+                return {"status": "error", "message": f"Kie.ai Error: {res.text[:50]}"}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
 test_connection_service = TestConnectionService()

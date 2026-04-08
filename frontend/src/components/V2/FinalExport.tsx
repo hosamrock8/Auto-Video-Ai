@@ -7,6 +7,7 @@ import {
   ChevronRight, Video, FileVideo, 
   Layers, Tag, Type
 } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
 interface SEO {
   titles: string[];
@@ -57,7 +58,7 @@ export default function FinalExport({ videoUrl, thumbnailUrl, seo }: FinalExport
               <div className="bg-black/40 rounded-[2.2rem] p-4 relative overflow-hidden">
                 <video 
                   controls 
-                  src={`http://localhost:8000${videoUrl}`} 
+                  src={`${API_BASE_URL}${videoUrl}`} 
                   className="w-full rounded-[1.8rem] bg-black shadow-2xl relative z-10"
                 />
                 {/* Visual Decor */}
@@ -67,7 +68,7 @@ export default function FinalExport({ videoUrl, thumbnailUrl, seo }: FinalExport
 
            <div className="grid grid-cols-2 gap-6">
               <a 
-                href={`http://localhost:8000${videoUrl}`} 
+                href={`${API_BASE_URL}${videoUrl}`} 
                 download 
                 className="flex items-center justify-center gap-4 py-6 bg-white text-black rounded-3xl font-black text-[11px] uppercase tracking-[0.3em] hover:bg-green-500 hover:text-white transition-all active:scale-95 shadow-xl relative overflow-hidden group/btn"
               >
@@ -75,7 +76,7 @@ export default function FinalExport({ videoUrl, thumbnailUrl, seo }: FinalExport
                 <Download className="w-5 h-5 group-hover/btn:translate-y-1 transition-transform" /> Export_Master_File
               </a>
               <a 
-                href={`http://localhost:8000${thumbnailUrl}`} 
+                href={`${API_BASE_URL}${thumbnailUrl}`} 
                 download 
                 className="flex items-center justify-center gap-4 py-6 bg-white/[0.03] border border-white/5 rounded-3xl font-black text-[11px] uppercase tracking-[0.3em] hover:border-white/20 transition-all active:scale-95 text-white/40 hover:text-white"
               >

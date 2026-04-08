@@ -98,6 +98,55 @@ class LuminaGenerator:
 
         raise Exception(f"Image generation failed for {provider}")
 
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+    async def generate_video(self, vault: LuminaVault, scene_idx: int, image_url: str, prompt: str):
+        config = self._get_config("video")
+        provider = config["provider"]
+        api_key = config["api_key"] or os.getenv("FAL_KEY")
+        
+        # Determine actual file path if it's a local url
+        import base64
+        image_data_url = image_url
+        if image_url.startswith("/projects_vault"):
+            local_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), image_url.lstrip("/"))
+            if os.path.exists(local_path):
+                with open(local_path, "rb") as image_file:
+                    encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                    image_data_url = f"data:image/jpeg;base64,{encoded_string}"
+
+        url = config["custom_endpoint"] or "https://fal.run/fal-ai/kling-video/v1/standard/image-to-video"
+        headers = {"Authorization": f"Key {api_key}", "Content-Type": "application/json"}
+        
+        data = {
+            "image_url": image_data_url,
+            "prompt": prompt,
+            "duration": "5",
+            "aspect_ratio": "16:9" if vault.data["config"]["ratio"] == "16:9" else "9:16"
+        }
+
+        async with self.semaphore:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, json=data, timeout=120.0)
+                if response.status_code == 200:
+                    result = response.json()
+                    video_url = result.get("video", {}).get("url") or result.get("url")
+                    if not video_url and "video" in result:
+                         video_url = result["video"]
+                    
+                    if video_url and isinstance(video_url, str):
+                        vid_res = await client.get(video_url, timeout=120.0)
+                        videos_dir = os.path.join(vault.path, "videos")
+                        os.makedirs(videos_dir, exist_ok=True)
+                        file_path = os.path.join(videos_dir, f"scene_{scene_idx+1}.mp4")
+                        with open(file_path, "wb") as f:
+                            f.write(vid_res.content)
+                        
+                        vault.log_cost("fal.ai", "kling-video", 0.05, engine="video")
+                        return f"/projects_vault/{vault.id}/videos/scene_{scene_idx+1}.mp4"
+
+        raise Exception(f"Video animation failed for {provider}")
+
+
     async def generate_music(self, vault: LuminaVault, prompt: str):
         # Implementation for background music
         config = self._get_config("music")
@@ -132,6 +181,82 @@ class LuminaGenerator:
             
         vault.data["assets"]["scenes"] = sorted(existing_assets, key=lambda x: x["scene"])
         vault.save()
+
+    async def generate_images_only(self, vault: LuminaVault):
+        vault.update_status(ProjectState.GENERATING_ASSETS)
+        script = vault.data.get("script")
+        if not script or "scenes" not in script:
+            raise Exception("No script found to generate storyboard")
+
+        scenes = script["scenes"]
+        
+        # Parallel image generation tasks
+        tasks = []
+        for i, scene in enumerate(scenes):
+            tasks.append(self.generate_image(vault, i, scene["image_prompt"]))
+        
+        image_urls = await asyncio.gather(*tasks)
+        
+        # Hydrate assets in vault
+        existing_assets = vault.data["assets"].get("scenes", [])
+        for i, url in enumerate(image_urls):
+            asset_entry = next((a for a in existing_assets if a["scene"] == i + 1), None)
+            if asset_entry:
+                asset_entry["image"] = url
+            else:
+                existing_assets.append({
+                    "scene": i + 1,
+                    "image": url,
+                    "audio": None,
+                    "motion": scenes[i].get("motion_direction", "slow zoom")
+                })
+        
+        vault.data["assets"]["scenes"] = sorted(existing_assets, key=lambda x: x["scene"])
+        vault.update_status(ProjectState.AWAITING_ASSET_APPROVAL)
+        vault.save()
+
+    async def generate_videos_only(self, vault: LuminaVault):
+        vault.update_status(ProjectState.GENERATING_ASSETS)
+        script = vault.data.get("script")
+        if not script or "scenes" not in script:
+            raise Exception("No script found to generate video animation")
+
+        existing_assets = vault.data["assets"].get("scenes", [])
+        if not existing_assets:
+            raise Exception("No image assets found. Need images to animate.")
+
+        scenes = script["scenes"]
+        
+        # Parallel video generation tasks
+        tasks = []
+        for i, scene in enumerate(scenes):
+            asset_entry = next((a for a in existing_assets if a["scene"] == i + 1), None)
+            image_url = asset_entry.get("image") if asset_entry else None
+            if not image_url:
+                continue # Skip if no image
+            
+            # Using video_animation_prompt or fallback to motion_direction
+            prompt = scene.get("video_animation_prompt", scene.get("motion_direction", "cinematic slow pan"))
+            
+            # Since the API expects an absolute URL, we must transform local paths if necessary
+            # Assuming image_url might be a relative path like '/projects_vault/...', we need to pass a public URL
+            # If it's a local vault file, fal.ai cannot access it directly without being uploaded or base64 encoded.
+            # We'll pass the local file and handle it inside generate_video.
+            tasks.append(self.generate_video(vault, i, image_url, prompt))
+        
+        video_urls = await asyncio.gather(*tasks)
+        
+        # Update assets with videos
+        for i, url in enumerate(video_urls):
+            if url: # url could be generic/failed
+                asset_entry = next((a for a in existing_assets if a["scene"] == i + 1), None)
+                if asset_entry:
+                    asset_entry["video"] = url
+        
+        vault.data["assets"]["scenes"] = sorted(existing_assets, key=lambda x: x["scene"])
+        vault.update_status(ProjectState.AWAITING_ASSET_APPROVAL)
+        vault.save()
+
 
     async def generate_all_assets(self, vault: LuminaVault):
         vault.update_status(ProjectState.GENERATING_ASSETS)

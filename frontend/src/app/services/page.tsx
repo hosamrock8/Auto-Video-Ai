@@ -80,7 +80,7 @@ export default function ServicesOffice() {
             ].map((provider) => (
               <button
                 key={provider.id}
-                onClick={() => setActiveProvider(provider.id as any)}
+                onClick={() => setActiveProvider(provider.id as 'fal.ai' | 'kie.ai')}
                 className={`flex items-center gap-4 px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all border ${
                   activeProvider === provider.id 
                     ? 'bg-white text-black border-white shadow-xl shadow-white/10' 
@@ -198,7 +198,7 @@ export default function ServicesOffice() {
               <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <Zap className="w-8 h-8 text-primary mb-6 relative z-10" />
               <h4 className="text-xl font-black mb-3 relative z-10 tracking-tight uppercase">Protocol Tip</h4>
-              <p className="text-xs text-gray-400 leading-relaxed font-bold uppercase tracking-wide relative z-10">Use Quantized LLMs for the 'Initial Scripting' to minimize Universal Token consumption.</p>
+              <p className="text-xs text-gray-400 leading-relaxed font-bold uppercase tracking-wide relative z-10">Use Quantized LLMs for the &apos;Initial Scripting&apos; to minimize Universal Token consumption.</p>
             </div>
           </div>
         </div>

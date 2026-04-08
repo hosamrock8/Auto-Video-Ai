@@ -25,20 +25,21 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTask, setActiveTask] = useState<string | null>(null);
 
-  const fetchProjects = async () => {
+  const fetchProjects = React.useCallback(async () => {
     try {
       const res = await axios.get('http://localhost:8000/api/projects');
       setProjects(res.data);
     } catch (err) {
       console.error("Failed to fetch projects:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line
     fetchProjects();
     const interval = setInterval(fetchProjects, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchProjects]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();

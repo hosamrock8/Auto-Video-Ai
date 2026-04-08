@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Save, Key, Sliders, Play, CheckCircle, Cpu, ImageIcon, Video, Mic, Music, Volume2, Settings as SettingsIcon, Zap } from 'lucide-react';
+import { X, Save, Settings as SettingsIcon, Zap, Lock, Cpu, ImageIcon, Video, Mic } from 'lucide-react';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,7 +24,8 @@ export default function SettingsSidebar({ isOpen, onClose }: SettingsSidebarProp
 
   if (!isOpen) return null;
 
-  const currentConfig = (settingsStore as any)[activeTab];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const currentConfig = (settingsStore as any)[activeTab] as any;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-md transition-all">
@@ -92,7 +93,7 @@ export default function SettingsSidebar({ isOpen, onClose }: SettingsSidebarProp
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Format</label>
                     <select 
                       value={settingsStore.global?.aspect_ratio}
-                      onChange={(e) => settingsStore.updateCategory('global', { aspect_ratio: e.target.value as any })}
+                      onChange={(e) => settingsStore.updateCategory('global', { aspect_ratio: e.target.value as '9:16' | '16:9' | '1:1' })}
                       className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-purple-500/50"
                     >
                       <option value="9:16">Portrait (9:16)</option>

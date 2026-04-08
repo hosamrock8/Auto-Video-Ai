@@ -3,6 +3,7 @@ import uuid
 import asyncio
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 
@@ -27,12 +28,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve generated media files (images, audio, video) from the vault
+VAULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "projects_vault")
+os.makedirs(VAULT_DIR, exist_ok=True)
+app.mount("/projects_vault", StaticFiles(directory=VAULT_DIR), name="projects_vault")
+
 class GenerateRequest(BaseModel):
     source: str
+    config: Optional[dict] = None
 
-async def script_pipeline(project_id: str, source: str):
+async def script_pipeline(project_id: str, source: str, config: Optional[dict] = None):
     vault = get_vault(project_id)
     try:
+        if config:
+            vault.data["config"].update(config)
+            vault.save()
+            
         # 1. Extraction Phase
         vault.update_status(ProjectState.SCRIPTING)
         content = await scraper.extract(source)
@@ -73,8 +84,27 @@ async def generate_script_endpoint(project_id: str, request: GenerateRequest, ba
     if vault.data["status"] not in [ProjectState.DRAFT, ProjectState.ERROR]:
         raise HTTPException(status_code=400, detail="Project is already in production or awaiting approval.")
     
-    background_tasks.add_task(script_pipeline, project_id, request.source)
+    background_tasks.add_task(script_pipeline, project_id, request.source, request.config)
     return {"message": "Script generation started"}
+
+@app.post("/api/projects/{project_id}/generate-images")
+async def generate_images_endpoint(project_id: str, background_tasks: BackgroundTasks):
+    vault = get_vault(project_id)
+    if vault.data["status"] != ProjectState.AWAITING_SCRIPT_APPROVAL:
+        raise HTTPException(status_code=400, detail="Script must be generated/approved before images.")
+    
+    background_tasks.add_task(generator.generate_images_only, vault)
+    return {"message": "Visual Engine has started rendering storyboard"}
+
+@app.post("/api/projects/{project_id}/generate-videos")
+async def generate_videos_endpoint(project_id: str, background_tasks: BackgroundTasks):
+    vault = get_vault(project_id)
+    if vault.data["status"] != ProjectState.AWAITING_ASSET_APPROVAL and vault.data["status"] != ProjectState.GENERATING_ASSETS:
+        # If images are done, it should be AWAITING_ASSET_APPROVAL
+        pass
+    
+    background_tasks.add_task(generator.generate_videos_only, vault)
+    return {"message": "Video Engine has started animating scenes"}
 
 @app.post("/api/projects/{project_id}/generate-assets")
 async def generate_assets_endpoint(project_id: str, background_tasks: BackgroundTasks):
@@ -135,6 +165,8 @@ async def test_settings_connection(payload: dict):
         return await test_connection_service.test_elevenlabs(api_key)
     elif provider == "google":
         return await test_connection_service.test_google(api_key)
+    elif provider == "kie.ai":
+        return await test_connection_service.test_kie(api_key)
     
     return {"status": "error", "message": f"Testing not supported for {provider}"}
 

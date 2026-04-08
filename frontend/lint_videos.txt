@@ -1,0 +1,138 @@
+
+> frontend@0.1.0 lint
+> eslint
+
+
+D:\project\Auto Video ai\frontend\src\app\admin\page.tsx
+  5:25  warning  'Users' is defined but never used       @typescript-eslint/no-unused-vars
+  7:27  warning  'TrendingUp' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\create\page.tsx
+  41:6   warning  React Hook useEffect has missing dependencies: 'setWizardStep' and 'wizardStep'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  94:43  error    'Film' is not defined                                                                                                                react/jsx-no-undef
+
+D:\project\Auto Video ai\frontend\src\app\image-engine\page.tsx
+  6:3   warning  'Layout' is defined but never used           @typescript-eslint/no-unused-vars
+  9:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\page.tsx
+  19:6   warning  React Hook useEffect has a missing dependency: 'syncAllProjects'. Either include it or remove the dependency array                                                                                                                                                                       react-hooks/exhaustive-deps
+  75:24  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\project\Auto Video ai\frontend\src\app\projects\[id]\page.tsx
+  7:19  warning  'CheckCircle' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\projects\page.tsx
+  6:17  warning  'Filter' is defined but never used        @typescript-eslint/no-unused-vars
+  7:3   warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+  7:17  warning  'BarChart3' is defined but never used     @typescript-eslint/no-unused-vars
+  8:16  warning  'Play' is defined but never used          @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\quality\page.tsx
+   5:16  warning  'CheckSquare' is defined but never used   @typescript-eslint/no-unused-vars
+   5:29  warning  'XSquare' is defined but never used       @typescript-eslint/no-unused-vars
+  11:11  warning  'AssetReview' is defined but never used   @typescript-eslint/no-unused-vars
+  20:44  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\project\Auto Video ai\frontend\src\app\services\page.tsx
+  5:28  warning  'Filter' is defined but never used        @typescript-eslint/no-unused-vars
+  6:3   warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+  7:42  warning  'CheckCircle' is defined but never used   @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\settings\page.tsx
+  5:9   warning  'Key' is defined but never used         @typescript-eslint/no-unused-vars
+  5:23  warning  'Shield' is defined but never used      @typescript-eslint/no-unused-vars
+  7:22  warning  'Volume2' is defined but never used     @typescript-eslint/no-unused-vars
+  9:10  warning  'LayoutGrid' is defined but never used  @typescript-eslint/no-unused-vars
+  9:33  warning  'Rocket' is defined but never used      @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\app\video-engine\page.tsx
+  6:14  warning  'Play' is defined but never used             @typescript-eslint/no-unused-vars
+  6:20  warning  'Sliders' is defined but never used          @typescript-eslint/no-unused-vars
+  7:3   warning  'ArrowRight' is defined but never used       @typescript-eslint/no-unused-vars
+  7:15  warning  'Activity' is defined but never used         @typescript-eslint/no-unused-vars
+  9:18  warning  'AnimatePresence' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\Dashboard.tsx
+   7:3   warning  'AlertCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   8:3   warning  'ExternalLink' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   8:17  warning  'Trash2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  26:10  warning  'activeTask' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  38:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\project\Auto Video ai\frontend\src\components\Dashboard.tsx:38:5
+  36 |
+  37 |   useEffect(() => {
+> 38 |     fetchProjects();
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  39 |     const interval = setInterval(fetchProjects, 10000);
+  40 |     return () => clearInterval(interval);
+  41 |   }, [fetchProjects]);  react-hooks/set-state-in-effect
+  73:14  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\SettingsSidebar.tsx
+  27:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\project\Auto Video ai\frontend\src\components\Sidebar.tsx
+  5:46  warning  'CreditCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V2\AssetReview.tsx
+   4:18  warning  'AnimatePresence' is defined but never used                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   6:3   warning  'Play' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   6:20  warning  'CheckCircle2' is defined but never used                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   6:34  warning  'AlertCircle' is defined but never used                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  53:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\project\Auto Video ai\frontend\src\components\V2\FinalExport.tsx
+  6:26  warning  'Share2' is defined but never used        @typescript-eslint/no-unused-vars
+  7:3   warning  'ChevronRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V2\ScriptReview.tsx
+  7:9   warning  'GripVertical' is defined but never used  @typescript-eslint/no-unused-vars
+  7:23  warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+  7:37  warning  'AlertCircle' is defined but never used   @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V2\WorkflowBar.tsx
+   4:10  warning  'motion' is defined but never used        @typescript-eslint/no-unused-vars
+   6:8   warning  'Play' is defined but never used          @typescript-eslint/no-unused-vars
+   6:14  warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+   6:28  warning  'AlertCircle' is defined but never used   @typescript-eslint/no-unused-vars
+   7:3   warning  'RefreshCcw' is defined but never used    @typescript-eslint/no-unused-vars
+   7:15  warning  'DollarSign' is defined but never used    @typescript-eslint/no-unused-vars
+  17:47  warning  'totalCost' is defined but never used     @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step2Voice.tsx
+  4:15  warning  'Globe' is defined but never used  @typescript-eslint/no-unused-vars
+  4:48  warning  'Wand2' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step3Visuals.tsx
+   9:27  warning  'wizardData' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  54:24  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step4Timeline.tsx
+  5:49  warning  'RefreshCcw' is defined but never used  @typescript-eslint/no-unused-vars
+  5:74  warning  'Film' is defined but never used        @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step5Animations.tsx
+   6:47  warning  'Eye' is defined but never used         @typescript-eslint/no-unused-vars
+  11:17  warning  't' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step5Captions.tsx
+  51:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\Step7Socials.tsx
+  5:10  warning  'Share2' is defined but never used               @typescript-eslint/no-unused-vars
+  9:11  warning  'wizardData' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\project\Auto Video ai\frontend\src\components\V3\Wizard\shared\VerticalImageCard.tsx
+  30:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+✖ 68 problems (5 errors, 63 warnings)
+

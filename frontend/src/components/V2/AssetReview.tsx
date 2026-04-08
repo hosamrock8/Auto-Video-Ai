@@ -6,6 +6,7 @@ import {
   Play, RotateCcw, CheckCircle2, AlertCircle, 
   ImageIcon, Volume2, ShieldCheck, DollarSign
 } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
 interface Asset {
   scene: number;
@@ -50,7 +51,7 @@ export default function AssetReview({ assets, onRegenerate, isPolling }: AssetRe
               {/* Image Preview (The Monitor) */}
               <div className="aspect-video relative overflow-hidden bg-black/60 shadow-inner">
                 <img 
-                  src={`http://localhost:8000${asset.image}`} 
+                  src={`${API_BASE_URL}${asset.image}`} 
                   alt={`Scene ${asset.scene}`}
                   className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-1000 grayscale-[0.2] group-hover:grayscale-0"
                 />
@@ -76,7 +77,7 @@ export default function AssetReview({ assets, onRegenerate, isPolling }: AssetRe
                   <div className="relative">
                     <audio 
                       controls 
-                      src={`http://localhost:8000${asset.audio}`}
+                      src={`${API_BASE_URL}${asset.audio}`}
                       className="w-full h-10 filter invert opacity-20 hover:opacity-60 transition-all scale-95 origin-left"
                     />
                   </div>

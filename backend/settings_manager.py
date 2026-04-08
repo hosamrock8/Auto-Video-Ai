@@ -48,8 +48,36 @@ DEFAULT_SETTINGS = {
         "watermark": False,
         "fallback_enabled": True,
         "max_cost_limit": 5.0,
-        "budget_alert": True
-    }
+        "budget_alert": True,
+        "brand_persona": ""
+    },
+    "telemetry": {
+        "monthly_cost": 0.0,
+        "usage_stats": { "llm": 0, "image": 0, "video": 0, "audio": 0 }
+    },
+    "publishing": {
+        "youtube_api_key": "",
+        "webhook_url": ""
+    },
+    "activeWorkspace": "default",
+    "workspaces": [
+        { 
+          "id": "default", 
+          "name": "Default Factory", 
+          "defaults": {
+            "global": { 
+              "aspect_ratio": "16:9", 
+              "resolution": "1080p", 
+              "language": "english", 
+              "watermark": False, 
+              "fallback_enabled": True, 
+              "max_cost_limit": 5.0, 
+              "budget_alert": True,
+              "brand_persona": ""
+            }
+          }
+        }
+    ]
 }
 
 class SettingsManager:
@@ -74,6 +102,20 @@ class SettingsManager:
         self.settings = new_settings
         with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
             json.dump(self.settings, f, ensure_ascii=False, indent=2)
+
+    def record_usage(self, engine: str, cost: float):
+        """Records API usage cost in the global telemetry."""
+        if "telemetry" not in self.settings:
+            self.settings["telemetry"] = {
+                "monthly_cost": 0.0,
+                "usage_stats": { "llm": 0, "image": 0, "video": 0, "audio": 0 }
+            }
+        
+        self.settings["telemetry"]["monthly_cost"] += cost
+        if engine in self.settings["telemetry"]["usage_stats"]:
+            self.settings["telemetry"]["usage_stats"][engine] += 1 # Count of calls
+        
+        self.save()
 
     def get_engine_config(self, engine_name: str) -> Dict[str, Any]:
         return self.settings.get(engine_name, DEFAULT_SETTINGS.get(engine_name))

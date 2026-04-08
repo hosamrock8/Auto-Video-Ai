@@ -43,21 +43,9 @@ export default function WorkflowBar({ status, totalCost, onAction, loading }: Wo
                  <div className={`w-3 h-3 rounded-full ${loading ? 'bg-primary' : 'bg-secondary'} animate-pulse shadow-[0_0_15px_rgba(168,85,247,0.6)] relative z-10`} />
                </div>
                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-1.5 leading-none">Production_Node_Status</span>
+                  <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-1.5 leading-none">Production_Protocol_Status</span>
                   <span className="text-sm font-black uppercase text-white tracking-widest italic">{status.replace(/_/g, ' ')}</span>
                </div>
-             </div>
-
-             <div className="h-8 w-px bg-white/5 hidden md:block" />
-
-             <div className="flex items-center gap-4 group">
-                <div className="p-3 bg-white/[0.03] rounded-2xl text-green-500 border border-white/5 transition-all group-hover:bg-green-500 group-hover:text-black">
-                   <DollarSign className="w-5 h-5" />
-                </div>
-                <div className="flex flex-col">
-                   <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-1.5 leading-none">Factory_Output_Cost</span>
-                   <span className="text-xl font-black text-green-500 tracking-tighter italic">${totalCost.toFixed(4)} <span className="text-[10px] text-white/10 uppercase not-italic tracking-widest ml-1 font-bold">Units</span></span>
-                </div>
              </div>
           </div>
 

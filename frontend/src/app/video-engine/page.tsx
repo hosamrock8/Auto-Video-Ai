@@ -213,7 +213,7 @@ export default function VideoEngine() {
             <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
             <Zap className="w-10 h-10 text-blue-500/40 mx-auto mb-6 group-hover:scale-110 transition-transform" />
             <h4 className="text-[11px] font-black uppercase tracking-widest mb-3">Unified_3D_Path</h4>
-            <p className="text-[9px] font-bold text-white/20 leading-relaxed uppercase tracking-wider">This path bypasses intermediate image generation for faster 'Script-to-Shorts' workflows.</p>
+            <p className="text-[9px] font-bold text-white/20 leading-relaxed uppercase tracking-wider">This path bypasses intermediate image generation for faster &apos;Script-to-Shorts&apos; workflows.</p>
           </div>
         </div>      </div>
     </div>
