@@ -81,6 +81,7 @@ class TestConnectionService:
                     return {"status": "success", "message": "Successfully connected to Kie.ai"}
                 return {"status": "error", "message": f"Kie.ai Error: {res.text[:50]}"}
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            print(f"--- [SERVICE CRASH] {str(e)} ---")
+            raise e
 
 test_connection_service = TestConnectionService()

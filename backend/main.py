@@ -1,7 +1,9 @@
 import os
 import uuid
 import asyncio
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+import traceback
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -27,6 +29,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+            "path": request.url.path,
+            "method": request.method
+        }
+    )
 
 # Serve generated media files (images, audio, video) from the vault
 VAULT_DIR = PROJECTS_DIR
@@ -60,6 +74,19 @@ async def script_pipeline(project_id: str, source: str, config: Optional[dict] =
 @app.get("/api/health")
 async def health():
     return {"status": "online", "mode": "V2_DECOUPLED"}
+
+@app.get("/api/debug")
+async def debug_info():
+    return {
+        "cwd": os.getcwd(),
+        "env_vercel": os.environ.get("VERCEL"),
+        "projects_dir": PROJECTS_DIR,
+        "vault_dir": VAULT_DIR,
+        "dir_exists": {
+            "projects": os.path.exists(PROJECTS_DIR),
+            "vault": os.path.exists(VAULT_DIR)
+        }
+    }
 
 @app.post("/api/projects/init")
 async def init_project():
@@ -149,18 +176,24 @@ async def test_settings_connection(payload: dict):
     provider = payload.get("provider")
     api_key = payload.get("api_key")
     
-    if provider == "openai":
-        return await test_connection_service.test_openai(api_key)
-    elif provider == "fal.ai":
-        return await test_connection_service.test_fal(api_key)
-    elif provider == "elevenlabs":
-        return await test_connection_service.test_elevenlabs(api_key)
-    elif provider == "google":
-        return await test_connection_service.test_google(api_key)
-    elif provider == "kie.ai":
-        return await test_connection_service.test_kie(api_key)
-    
-    return {"status": "error", "message": f"Testing not supported for {provider}"}
+    try:
+        if provider == "openai":
+            return await test_connection_service.test_openai(api_key)
+        elif provider == "fal.ai":
+            return await test_connection_service.test_fal(api_key)
+        elif provider == "elevenlabs":
+            return await test_connection_service.test_elevenlabs(api_key)
+        elif provider == "google":
+            return await test_connection_service.test_google(api_key)
+        elif provider == "kie.ai":
+            return await test_connection_service.test_kie(api_key)
+        
+        return {"status": "error", "message": f"Testing not supported for {provider}"}
+    except Exception as e:
+        # Forcing detailed error exposure for Vercel debugging
+        error_info = f"Backend Crash during {provider} test: {str(e)}"
+        print(f"--- [CRITICAL] {error_info} ---")
+        raise HTTPException(status_code=500, detail=error_info)
 
 @app.get("/api/settings")
 async def get_settings():

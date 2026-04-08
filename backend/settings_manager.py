@@ -108,8 +108,8 @@ class SettingsManager:
                         if cat not in saved:
                             saved[cat] = data
                     return saved
-            except:
-                pass
+            except Exception as e:
+                print(f"--- [SETTINGS ERROR] Load failed: {e} ---")
         return DEFAULT_SETTINGS
 
     def save(self, new_settings: Dict[str, Any]):

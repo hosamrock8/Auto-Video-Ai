@@ -40,7 +40,8 @@ class LuminaVault:
             try:
                 with open(self.state_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
-            except: pass
+            except Exception as e:
+                print(f"--- [VAULT ERROR] Load failed ({self.id}): {e} ---")
         
         return {
             "id": self.id,
