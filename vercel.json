@@ -1,20 +1,16 @@
 {
-    "experimentalServices": {
-        "frontend": {
-            "entrypoint": "frontend",
-            "routePrefix": "/",
-            "framework": "nextjs"
-        },
-        "backend": {
-            "entrypoint": "backend/main.py",
-            "routePrefix": "/_/backend"
-        }
-    },
-    "functions": {
-        "backend/main.py": {
-            "maxDuration": 60,
-            "memory": 1024,
-            "runtime": "python3.12"
-        }
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
     }
+  ],
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 60,
+      "memory": 1024,
+      "runtime": "python3.12"
+    }
+  }
 }

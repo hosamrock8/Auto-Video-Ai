@@ -12,7 +12,7 @@ Lumina Studio is an enterprise-grade AI video orchestration factory designed to 
 Our repository follows a professional **Split-Node Architecture** to isolate production logic from the user interface:
 
 - 📂 `/frontend`: A high-fidelity **Next.js (Turbopack)** studio dashboard.
-- 📂 `/backend`: A robust **FastAPI (Python)** orchestration engine.
+- 📂 `/api`: A robust **FastAPI (Python)** orchestration engine.
 
 > [!NOTE]
 > **Data Privacy & Exclusions:**
@@ -38,7 +38,7 @@ npm run dev
 
 ### 3. Backend Launch (Engine)
 ```bash
-cd backend
+cd api
 pip install -r requirements.txt
 python main.py
 ```

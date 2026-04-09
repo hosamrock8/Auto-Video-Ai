@@ -16,12 +16,12 @@ if not exist ".env" (
 )
 
 echo  [1/3] Installing Python dependencies...
-pip install -r backend/requirements.txt -q
+pip install -r api/requirements.txt -q
 echo  [OK] Backend dependencies ready.
 echo.
 
 echo  [2/3] Starting FastAPI Backend on port 8000...
-start "Lumina Backend (Port 8000)" cmd /k "python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload"
+start "Lumina Backend (Port 8000)" cmd /k "python -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload"
 
 echo  [3/3] Starting Next.js Frontend on port 3000...
 cd frontend
