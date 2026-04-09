@@ -4,3 +4,9 @@ pydantic
 python-dotenv
 httpx
 mangum
+tenacity
+openai
+google-genai
+trafilatura
+beautifulsoup4
+youtube-transcript-api
