@@ -24,7 +24,7 @@ from assembler import assembler
 from dotenv import load_dotenv
 load_dotenv()
 
-app = FastAPI(title="Lumina Studio V2 - AI Personal Production", root_path="/_/backend")
+app = FastAPI(title="Lumina Studio V2 - AI Personal Production")
 
 app.add_middleware(
     CORSMiddleware,
