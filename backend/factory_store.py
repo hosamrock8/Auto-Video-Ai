@@ -15,7 +15,7 @@ try:
 except Exception as e:
     print(f"--- [STORAGE WARNING] Could not ensure PROJECTS_DIR: {e} ---")
 
-from .settings_manager import settings_manager
+from settings_manager import settings_manager
 
 class ProjectState:
     DRAFT = "draft"

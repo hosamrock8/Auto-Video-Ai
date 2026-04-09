@@ -9,19 +9,19 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 
-from .factory_store import get_vault, list_all_vaults, ProjectState, LuminaVault, PROJECTS_DIR
-from .scraper import scraper
-from .post_production import post_production
-from .settings_manager import settings_manager
-from .test_connection_service import test_connection_service
-from .mastermind import mastermind
-from .generator import generator
-from .assembler import assembler
+from factory_store import get_vault, list_all_vaults, ProjectState, LuminaVault, PROJECTS_DIR
+from scraper import scraper
+from post_production import post_production
+from settings_manager import settings_manager
+from test_connection_service import test_connection_service
+from mastermind import mastermind
+from generator import generator
+from assembler import assembler
 
 from dotenv import load_dotenv
 load_dotenv()
 
-app = FastAPI(title="Lumina Studio V2 - AI Personal Production")
+app = FastAPI(title="Lumina Studio V2 - AI Personal Production", root_path="/_/backend")
 
 app.add_middleware(
     CORSMiddleware,
