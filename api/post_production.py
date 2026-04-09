@@ -4,7 +4,7 @@ import asyncio
 from openai import OpenAI
 from pydantic import BaseModel
 from typing import List
-from .factory_store import LuminaVault
+from factory_store import LuminaVault
 
 class YouTubePackage(BaseModel):
     titles: List[str]

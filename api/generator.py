@@ -4,8 +4,8 @@ import httpx
 from typing import List, Optional, Dict, Any
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from .factory_store import LuminaVault, ProjectState
-from .settings_manager import settings_manager
+from factory_store import LuminaVault, ProjectState
+from settings_manager import settings_manager
 
 class LuminaGenerator:
     def __init__(self):

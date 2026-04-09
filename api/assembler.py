@@ -1,7 +1,7 @@
 import os
 import asyncio
 import subprocess
-from .factory_store import LuminaVault, ProjectState
+from factory_store import LuminaVault, ProjectState
 
 class LuminaAssembler:
     def __init__(self):

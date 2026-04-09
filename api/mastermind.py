@@ -5,8 +5,8 @@ from typing import List
 from pydantic import BaseModel
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from .factory_store import LuminaVault, ProjectState
-from .settings_manager import settings_manager
+from factory_store import LuminaVault, ProjectState
+from settings_manager import settings_manager
 
 # ── Pydantic schemas ─────────────────────────────────────────────────────────
 class Scene(BaseModel):

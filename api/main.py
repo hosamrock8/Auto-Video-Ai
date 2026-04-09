@@ -1,19 +1,24 @@
 import os
+import sys
 import uuid
+
+# Add current directory (now task root in Vercel) to path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Dict, Any, Optional, List
 from mangum import Mangum
 
-# Relative imports for the api package
-from .settings_manager import settings_manager
-from .test_connection_service import test_connection_service
-from .factory_store import get_vault, list_all_vaults, ProjectState
-from .mastermind import mastermind
-from .generator import generator
-from .assembler import assembler
-from .scraper import scraper
+# Absolute imports for siblings
+from settings_manager import settings_manager
+from test_connection_service import test_connection_service
+from factory_store import get_vault, list_all_vaults, ProjectState
+from mastermind import mastermind
+from generator import generator
+from assembler import assembler
+from scraper import scraper
 
 app = FastAPI(title="Lumina Studio - Production Engine")
 
