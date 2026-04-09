@@ -6,7 +6,7 @@ pydantic
 requests
 httpx
 fastapi
-uvicorn[standard]
+uvicorn
 tenacity
 beautifulsoup4
 youtube-transcript-api
