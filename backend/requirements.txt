@@ -1,13 +1,5 @@
-openai
-google-genai
-trafilatura
-python-dotenv
-pydantic
-requests
-httpx
 fastapi
 uvicorn
-tenacity
-beautifulsoup4
-youtube-transcript-api
-aiofiles
+pydantic
+python-dotenv
+httpx
