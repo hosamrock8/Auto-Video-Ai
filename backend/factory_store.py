@@ -1,7 +1,10 @@
 import os
+import sys
 import json
 from datetime import datetime
 from typing import List
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 IS_VERCEL = os.environ.get("VERCEL") == "1"
 if IS_VERCEL:
